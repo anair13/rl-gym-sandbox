@@ -8,8 +8,9 @@ import gym
 import numpy as np
 from discretizing_q_agent import DiscretizingQAgent
 from linear_q_agent import LinearQAgent
+from nfq import NFQAgent
 
-alg = DiscretizingQAgent
+alg = NFQAgent
 
 if __name__ == '__main__':
     # Call `undo_logger_setup` if you want to undo Gym's logger setup
@@ -37,7 +38,8 @@ if __name__ == '__main__':
     # will be namespaced). You can also dump to a tempdir if you'd
     # like: tempfile.mkdtemp().
     outdir = '/tmp/random-agent-results'
-    env = wrappers.Monitor(directory=outdir, force=True, video_callable=False)(env)
+    env = wrappers.Monitor(env, outdir, force=True, video_callable=False)
+    #env = wrappers.Monitor(directory=outdir, force=True, video_callable=False)(env)
     agent = alg(env.action_space, logger)
 
     reward = 0
@@ -45,11 +47,11 @@ if __name__ == '__main__':
     k = 100
     last_k = np.array([0 for _ in range(k)])
 
-    episode_count = 50000
+    episode_count = 10000
     # env.seed(0)
     # random.seed(0)
+    # logger.setLevel(logging.DEBUG)
     logger.setLevel(logging.INFO)
-    # logger.setLevel(logging.INFO)
     for i in range(episode_count):
         ob = env.reset()
         reward = 0.0
@@ -74,9 +76,6 @@ if __name__ == '__main__':
             # Note there's no env.render() here. But the environment still can open window and
             # render if asked by env.monitor: it calls env.render('rgb_array') to record video.
             # Video is not recorded every episode, see capped_cubic_video_schedule for details.
-
-    print agent.minimums
-    print agent.maximums
 
     # Close the env and write monitor result info to disk
     env.close()

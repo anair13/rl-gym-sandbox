@@ -3,7 +3,6 @@ import numpy as np
 import random
 from binning import safe_bin
 
-
 def randarr(shape):
     N = int(np.prod(np.array(shape)))
     x = np.zeros((N))
